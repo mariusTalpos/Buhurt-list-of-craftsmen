@@ -10,3 +10,9 @@ __pycache__/**
 .env.development
 .env.test
 .env.production
+scripts/duckdns-update.sh
+caddy.exe
+caddy
+caddy_windows_amd64.exe
+Caddyfile
+.caddy/

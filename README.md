@@ -70,7 +70,23 @@ After adding, enrich the entry in `vendors.csv` with `category`, `location`, `no
 
 See [`categories.txt`](categories.txt) for the suggested list.
 
-## Sharing publicly (GitHub Pages)
+## Deploy with DuckDNS + Caddy
+
+Public URL: [https://facapprovedvendors.duckdns.org](https://facapprovedvendors.duckdns.org)
+
+1. Keep DuckDNS updated: `bash scripts/duckdns-update.sh`
+2. Put `caddy.exe` in this project folder (gitignored)
+3. On your router, forward **TCP 80** and **TCP 443** to this PC
+4. Allow those ports in Windows Firewall for Caddy
+5. From this folder (Git Bash or PowerShell **as Administrator** so Caddy can bind 80/443):
+
+```bash
+./caddy.exe run
+```
+
+Caddy will serve the site and request an HTTPS certificate automatically once the ports are reachable from the internet.
+
+## Sharing via GitHub Pages (alternative)
 
 When you are ready to share the directory with the community:
 
@@ -86,6 +102,7 @@ To suggest new vendors, contributors can open a pull request that only edits `ve
 ```
 vendors.csv          # source of truth
 index.html           # browse/filter UI
+Caddyfile            # public HTTPS server config
 scripts/
   add_vendor.py      # paste-URL ingestion
 categories.txt       # category reference
