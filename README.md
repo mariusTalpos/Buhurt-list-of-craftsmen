@@ -28,7 +28,7 @@ If the vendor lists a website under Facebook **About > Links**, the script tries
 python scripts/add_vendor.py "https://www.facebook.com/groups/some-vendor" --website "https://their-shop.com"
 ```
 
-Optional flags: `--name`, `--category`, `--instagram`, `--location`.
+Optional flags: `--name`, `--category`, `--instagram`, `--location`, `--profile`.
 The script will:
 
 1. Normalize and dedupe the URL
@@ -54,8 +54,9 @@ After adding, enrich the entry in `vendors.csv` with `category`, `location`, `no
 |--------|-------------|
 | `id` | Auto-generated |
 | `name` | Vendor name (auto-filled when possible) |
-| `facebook_url` | Canonical business/catalog link |
-| `facebook_type` | `group`, `page`, or `profile` (auto-detected) |
+| `facebook_url` | Primary Facebook link — prefer group/catalog or business page |
+| `facebook_type` | `group`, `page`, or `profile` (type of the primary URL) |
+| `facebook_profile_url` | Optional personal profile for messaging (when they also have a group/catalog) |
 | `website_url` | External shop/site from Facebook About > Links (optional) |
 | `instagram_url` | Instagram profile URL (optional) |
 | `category` | e.g. steel, titanium, shields, weapons, leather, fabric, repairs, other |
@@ -64,7 +65,13 @@ After adding, enrich the entry in `vendors.csv` with `category`, `location`, `no
 | `status` | `new`, `verified`, or `inactive` |
 | `date_added` | ISO date |
 
-**One link per vendor.** Use the group or business page where they post their catalog. If a vendor has both a personal profile and a group, store only the group URL.
+**One vendor, up to two Facebook links.** Prefer the group or business page as `facebook_url` (catalog). If they also have a personal profile for messaging, store it in `facebook_profile_url` — do not create a second row.
+
+```bash
+python scripts/add_vendor.py "https://www.facebook.com/groups/some-catalog" \
+  --profile "https://www.facebook.com/profile.php?id=123" \
+  --name "Workshop Name" --category steel
+```
 
 ## Categories
 

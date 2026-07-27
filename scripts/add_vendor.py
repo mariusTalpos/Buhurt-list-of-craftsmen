@@ -19,6 +19,7 @@ FIELDS = [
     "name",
     "facebook_url",
     "facebook_type",
+    "facebook_profile_url",
     "website_url",
     "instagram_url",
     "category",
@@ -287,23 +288,48 @@ def confirm_profile_add() -> bool:
     return answer in {"y", "yes"}
 
 
+def facebook_urls_in_row(row: dict) -> set[str]:
+    urls = set()
+    for key in ("facebook_url", "facebook_profile_url"):
+        value = (row.get(key) or "").strip()
+        if value:
+            urls.add(value)
+    return urls
+
+
+def url_already_known(vendors: list[dict], *urls: str) -> str | None:
+    known = set()
+    for row in vendors:
+        known |= facebook_urls_in_row(row)
+    for url in urls:
+        if url and url in known:
+            return url
+    return None
+
+
 def add_vendor(
     url: str,
     force: bool = False,
     website_url: str = "",
     instagram_url: str = "",
+    profile_url: str = "",
     name: str = "",
     category: str = "",
     location: str = "",
 ) -> dict:
     normalized = normalize_facebook_url(url)
     facebook_type = detect_facebook_type(normalized)
+    profile = normalize_facebook_url(profile_url) if profile_url.strip() else ""
     vendors = read_vendors()
 
-    if any(row.get("facebook_url") == normalized for row in vendors):
-        raise ValueError(f"Vendor already exists: {normalized}")
+    duplicate = url_already_known(vendors, normalized, profile)
+    if duplicate:
+        raise ValueError(f"Vendor already exists: {duplicate}")
 
-    if facebook_type == "profile" and not force:
+    if profile and profile == normalized:
+        raise ValueError("Primary Facebook URL and profile URL must be different.")
+
+    if facebook_type == "profile" and not force and not profile:
         if not confirm_profile_add():
             raise SystemExit("Cancelled.")
 
@@ -324,6 +350,7 @@ def add_vendor(
         "name": resolved_name,
         "facebook_url": normalized,
         "facebook_type": facebook_type,
+        "facebook_profile_url": profile,
         "website_url": website,
         "instagram_url": instagram,
         "category": category.strip(),
@@ -345,7 +372,14 @@ def add_vendor(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Add a Buhurt vendor from a Facebook URL.")
-    parser.add_argument("facebook_url", help="Facebook group, page, or profile URL")
+    parser.add_argument(
+        "facebook_url",
+        help="Primary Facebook URL (prefer group/catalog or business page)",
+    )
+    parser.add_argument(
+        "--profile",
+        help="Personal Facebook profile for messaging (when they also have a group/catalog)",
+    )
     parser.add_argument(
         "--website",
         help="Vendor website from Facebook About > Links (optional; auto-detected when possible)",
@@ -370,6 +404,7 @@ def main() -> None:
             force=args.force,
             website_url=args.website or "",
             instagram_url=args.instagram or "",
+            profile_url=args.profile or "",
             name=args.name or "",
             category=args.category or "",
             location=args.location or "",
@@ -380,6 +415,8 @@ def main() -> None:
 
     name_display = row["name"] or "(no name yet)"
     extras = []
+    if row["facebook_profile_url"]:
+        extras.append(f"profile: {row['facebook_profile_url']}")
     if row["website_url"]:
         extras.append(f"website: {row['website_url']}")
     if row["instagram_url"]:

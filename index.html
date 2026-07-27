@@ -230,6 +230,32 @@
       border-color: #3b5998;
     }
 
+    .social-link.facebook-profile {
+      position: relative;
+    }
+
+    .social-link.facebook-profile::after {
+      content: "P";
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.55rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #8ab4f8;
+    }
+
+    .social-link.facebook-profile:hover {
+      color: #8ab4f8;
+      border-color: #3b5998;
+    }
+
+    .badge-profile {
+      background: #2e3a4a;
+      color: #9eb4cc;
+    }
+
     .social-link.instagram:hover {
       color: #e8a0c8;
       border-color: #c13584;
@@ -416,11 +442,18 @@
 
     function socialLink(url, platform, label) {
       if (!url) return "";
+      const iconKey = platform === "facebook-profile" ? "facebook" : platform;
       return `
         <a class="social-link ${platform}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">
-          ${ICONS[platform]}
+          ${ICONS[iconKey]}
         </a>
       `;
+    }
+
+    function facebookCatalogLabel(type) {
+      if (type === "group") return "Facebook catalog (group)";
+      if (type === "page") return "Facebook catalog (page)";
+      return "Facebook";
     }
 
     function compareVendors(a, b, sort) {
@@ -445,6 +478,9 @@
       const statusBadge = vendor.status
         ? `<span class="badge badge-status-${escapeHtml(vendor.status)}">${escapeHtml(vendor.status)}</span>`
         : "";
+      const profileBadge = vendor.facebook_profile_url
+        ? `<span class="badge badge-profile">+ profile</span>`
+        : "";
       const location = vendor.location
         ? `<div class="meta">${escapeHtml(vendor.location)}</div>`
         : "";
@@ -459,7 +495,8 @@
         : "Website";
       const links = `
         <div class="links">
-          ${socialLink(vendor.facebook_url, "facebook", "Facebook")}
+          ${socialLink(vendor.facebook_url, "facebook", facebookCatalogLabel(vendor.facebook_type))}
+          ${socialLink(vendor.facebook_profile_url, "facebook-profile", "Message on Facebook")}
           ${socialLink(vendor.instagram_url, "instagram", "Instagram")}
           ${socialLink(vendor.website_url, "website", websiteLabel)}
         </div>
@@ -472,6 +509,7 @@
           </div>
           <div class="badges">
             <span class="badge badge-type">${escapeHtml(formatType(vendor.facebook_type))}</span>
+            ${profileBadge}
             ${categoryBadges}
             ${statusBadge}
           </div>
@@ -494,10 +532,14 @@
 
       let filtered = vendors.filter((vendor) => {
         if (category && !parseCategories(vendor.category).includes(category)) return false;
-        if (type && vendor.facebook_type !== type) return false;
+        if (type) {
+          const primaryMatch = vendor.facebook_type === type;
+          const profileMatch = type === "profile" && Boolean(vendor.facebook_profile_url);
+          if (!primaryMatch && !profileMatch) return false;
+        }
         if (status && vendor.status !== status) return false;
         if (search) {
-          const haystack = `${vendor.name} ${vendor.notes} ${vendor.location} ${vendor.website_url} ${vendor.instagram_url}`.toLowerCase();
+          const haystack = `${vendor.name} ${vendor.notes} ${vendor.location} ${vendor.website_url} ${vendor.instagram_url} ${vendor.facebook_profile_url}`.toLowerCase();
           if (!haystack.includes(search)) return false;
         }
         return true;

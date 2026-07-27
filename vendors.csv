@@ -1,26 +1,25 @@
-id,name,facebook_url,facebook_type,website_url,instagram_url,category,location,notes,status,date_added
-1,Steel Armoury,https://www.facebook.com/groups/steelarmoury,group,https://example.com/steel-armoury,,steel,Poland,Example entry for testing the viewer,verified,2025-06-08
-2,Sergey Gvozd,https://www.facebook.com/sergey.gvozd.2025,profile,,,steel,,,verified,2026-06-08
-3,Michael Voyn,https://www.facebook.com/profile.php?id=100092262549365,profile,,,steel,,,new,2026-06-08
-4,Alexander Sapegin,https://www.facebook.com/alexander.sapegin.12,profile,,,steel,,,verified,2026-06-08
-5,American Buhurt,https://www.facebook.com/profile.php?id=100092271514935,profile,,,steel,Phoenix AZ,,new,2026-06-08
-6,Mariusz Ozog,https://www.facebook.com/mariusz.ozog.7,profile,,,steel,,,verified,2026-06-08
-7,Andrey Galevskyi,https://www.facebook.com/andrey.galevskyi,page,,,steel,,,verified,2026-06-08
-8,Steelskinfamily Master,https://www.facebook.com/steelskinfamily.master,page,,,steel,,,verified,2026-06-08
-9,Ural Workshop,https://www.facebook.com/groups/uralworkshop,group,,,steel,,,verified,2026-06-08
-10,Legacy Industry by Michael Voyn,https://www.facebook.com/groups/1372445010271645,group,,,steel,,,verified,2026-06-08
-11,Armor Workshop Dobrynya by Alexander Yakhnovskyi,https://www.facebook.com/groups/517700259717685,group,,,steel,,,verified,2026-06-08
-12,Red Hammer by Alex,https://www.facebook.com/groups/954192786232271,group,,,steel,,,verified,2026-06-08
-13,Master Uley Workshop,https://www.facebook.com/groups/151497962180825,group,,,steel,,,verified,2026-06-08
-14,Armor Workshop Pavlo Kozak,https://www.facebook.com/groups/711822189595159,group,,,steel,,,verified,2026-06-08
-15,Rick Thom,https://www.facebook.com/rick.thom.33,profile,,,shields,,Makes shields,verified,2026-06-08
-16,Martin Dahlen,https://www.facebook.com/martin.dahlen.77,profile,,,steel,,,verified,2026-06-08
-17,Andrew Barron,https://www.facebook.com/andrew.barron.39414,profile,,,leather,,,verified,2026-06-08
-18,Oleh Antonov,https://www.facebook.com/AstAhe2,page,,,"shields,soft_kit,boots",,,verified,2026-06-08
-19,Hryhorenko Vitalii,https://www.facebook.com/hryhorenko.vitalii.2025,profile,,,steel,,,verified,2026-06-08
-20,Struver Boriskin,https://www.facebook.com/struver.boriskin,page,,,"steel,boots",,,verified,2026-06-08
-21,Stanislav Dryga,https://www.facebook.com/stanislav.dryga.2025,profile,,,"steel,titanium",,,verified,2026-06-08
-22,Piotr's Historical Workshop,https://www.facebook.com/PiotrsHistoricalWorkshop,page,,,"steel,weapons,shields",,,verified,2026-06-08
-23,Maxim Suprovich,https://www.facebook.com/maxim.suprovich,page,,,steel,,,verified,2026-06-08
-24,Optimum Armes,https://www.facebook.com/profile.php?id=100086593265879,profile,https://www.optimumarmes.com/steel-gear,,"weapons,shields",,,verified,2026-06-10
-25,Swampland Relic Forge,https://www.facebook.com/swamplandknives,page,,https://www.instagram.com/swampland_relic_forge/,"weapons,shields",Florida,,verified,2026-07-26
+id,name,facebook_url,facebook_type,facebook_profile_url,website_url,instagram_url,category,location,notes,status,date_added
+1,Steel Armoury,https://www.facebook.com/groups/steelarmoury,group,,https://example.com/steel-armoury,,steel,Poland,Example entry for testing the viewer,verified,2025-06-08
+2,Sergey Gvozd,https://www.facebook.com/sergey.gvozd.2025,profile,,,,steel,,,verified,2026-06-08
+3,Alexander Sapegin,https://www.facebook.com/alexander.sapegin.12,profile,,,,steel,,,verified,2026-06-08
+4,American Buhurt,https://www.facebook.com/profile.php?id=100092271514935,profile,,,,steel,Phoenix AZ,,new,2026-06-08
+5,Mariusz Ozog,https://www.facebook.com/mariusz.ozog.7,profile,,,,steel,,,verified,2026-06-08
+6,Andrey Galevskyi,https://www.facebook.com/andrey.galevskyi,page,,,,steel,,,verified,2026-06-08
+7,Steelskinfamily Master,https://www.facebook.com/steelskinfamily.master,page,,,,steel,,,verified,2026-06-08
+8,Ural Workshop,https://www.facebook.com/groups/uralworkshop,group,,,,steel,,,verified,2026-06-08
+9,Legacy Industry by Michael Voyn,https://www.facebook.com/groups/1372445010271645,group,https://www.facebook.com/profile.php?id=100092262549365,,,steel,,,verified,2026-06-08
+10,Armor Workshop Dobrynya by Alexander Yakhnovskyi,https://www.facebook.com/groups/517700259717685,group,,,,steel,,,verified,2026-06-08
+11,Red Hammer by Alex,https://www.facebook.com/groups/954192786232271,group,,,,steel,,,verified,2026-06-08
+12,Master Uley Workshop,https://www.facebook.com/groups/151497962180825,group,,,,steel,,,verified,2026-06-08
+13,Armor Workshop Pavlo Kozak,https://www.facebook.com/groups/711822189595159,group,,,,steel,,,verified,2026-06-08
+14,Rick Thom,https://www.facebook.com/rick.thom.33,profile,,,,shields,,Makes shields,verified,2026-06-08
+15,Martin Dahlen,https://www.facebook.com/martin.dahlen.77,profile,,,,steel,,,verified,2026-06-08
+16,Andrew Barron,https://www.facebook.com/andrew.barron.39414,profile,,,,leather,,,verified,2026-06-08
+17,Oleh Antonov,https://www.facebook.com/AstAhe2,page,,,"","shields,soft_kit,boots",,,verified,2026-06-08
+18,Hryhorenko Vitalii,https://www.facebook.com/hryhorenko.vitalii.2025,profile,,,,steel,,,verified,2026-06-08
+19,Struver Boriskin,https://www.facebook.com/struver.boriskin,page,,,"","steel,boots",,,verified,2026-06-08
+20,Stanislav Dryga,https://www.facebook.com/stanislav.dryga.2025,profile,,,"","steel,titanium",,,verified,2026-06-08
+21,Piotr's Historical Workshop,https://www.facebook.com/PiotrsHistoricalWorkshop,page,,,"","steel,weapons,shields",,,verified,2026-06-08
+22,Maxim Suprovich,https://www.facebook.com/maxim.suprovich,page,,,,steel,,,verified,2026-06-08
+23,Optimum Armes,https://www.facebook.com/profile.php?id=100086593265879,profile,,https://www.optimumarmes.com/steel-gear,,"weapons,shields",,,verified,2026-06-10
+24,Swampland Relic Forge,https://www.facebook.com/swamplandknives,page,,,https://www.instagram.com/swampland_relic_forge/,"weapons,shields",Florida,,verified,2026-07-26
