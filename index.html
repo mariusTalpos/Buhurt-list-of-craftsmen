@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buhurt Vendor Directory</title>
+  <style>
+    :root {
+      --bg: #1a1612;
+      --surface: #252019;
+      --border: #3d3428;
+      --text: #f0e6d8;
+      --muted: #a89880;
+      --accent: #c9a227;
+      --accent-dim: #8a7020;
+      --new: #4a7c59;
+      --verified: #5a6e8a;
+      --inactive: #6b5b5b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 2rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #2a2218 0%, var(--bg) 100%);
+    }
+
+    h1 {
+      margin: 0 0 0.25rem;
+      font-size: 1.75rem;
+      font-weight: normal;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .controls input,
+    .controls select {
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .controls input {
+      flex: 1 1 200px;
+      min-width: 160px;
+    }
+
+    .controls select {
+      min-width: 130px;
+    }
+
+    .stats {
+      margin-left: auto;
+      align-self: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-family: system-ui, sans-serif;
+    }
+
+    main {
+      padding: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: border-color 0.15s;
+    }
+
+    .card:hover {
+      border-color: var(--accent-dim);
+    }
+
+    .card.status-new {
+      border-left: 3px solid var(--new);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: normal;
+      line-height: 1.3;
+    }
+
+    .card h2 a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .card h2 a:hover {
+      color: var(--accent);
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .badge {
+      font-family: system-ui, sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      background: var(--border);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .badge-type {
+      background: #2e3a4a;
+      color: #9eb4cc;
+    }
+
+    .badge-category {
+      background: #3a3020;
+      color: var(--accent);
+    }
+
+    .badge-status-new {
+      background: #2a4030;
+      color: #8ec9a0;
+    }
+
+    .badge-status-verified {
+      background: #2a3040;
+      color: #9eb0cc;
+    }
+
+    .badge-status-inactive {
+      background: #352a2a;
+      color: #b0a0a0;
+    }
+
+    .meta {
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .social-link svg {
+      width: 1.2rem;
+      height: 1.2rem;
+      fill: currentColor;
+    }
+
+    .social-link:hover {
+      border-color: var(--accent-dim);
+      color: var(--text);
+    }
+
+    .social-link.facebook:hover {
+      color: #8ab4f8;
+      border-color: #3b5998;
+    }
+
+    .social-link.instagram:hover {
+      color: #e8a0c8;
+      border-color: #c13584;
+    }
+
+    .social-link.website:hover {
+      color: var(--accent);
+    }
+
+    .notes {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .empty,
+    .error {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+    }
+
+    .error {
+      color: #c08080;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-family: system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Buhurt Vendor Directory</h1>
+    <p class="subtitle">Armor smiths, craftsmen, and commission services for fighters</p>
+  </header>
+
+  <div class="controls">
+    <input type="search" id="search" placeholder="Search name or notes…" autocomplete="off">
+    <select id="filter-category">
+      <option value="">All categories</option>
+    </select>
+    <select id="filter-type">
+      <option value="">All Facebook types</option>
+      <option value="group">Group</option>
+      <option value="page">Page</option>
+      <option value="profile">Profile</option>
+    </select>
+    <select id="filter-status">
+      <option value="">All statuses</option>
+      <option value="new">New (needs review)</option>
+      <option value="verified">Verified</option>
+      <option value="inactive">Inactive</option>
+    </select>
+    <select id="sort">
+      <option value="date-desc">Newest first</option>
+      <option value="date-asc">Oldest first</option>
+      <option value="name-asc">Name A–Z</option>
+      <option value="name-desc">Name Z–A</option>
+    </select>
+    <span class="stats" id="stats"></span>
+  </div>
+
+  <main>
+    <div id="content" class="grid"></div>
+  </main>
+
+  <footer>Buhurt Vendor Directory — data from vendors.csv</footer>
+
+  <script>
+    const CATEGORIES = ["steel", "titanium", "shields", "soft_kit", "boots", "weapons", "leather", "fabric", "repairs", "other"];
+
+    const CATEGORY_LABELS = {
+      steel: "Steel armor",
+      titanium: "Titanium armor",
+      shields: "Shields",
+      soft_kit: "Soft kit",
+      boots: "Boots",
+      weapons: "Weapons",
+      leather: "Leather",
+      fabric: "Fabric",
+      repairs: "Repairs",
+      other: "Other",
+    };
+
+    function parseCategories(categoryField) {
+      if (!categoryField) return [];
+      return categoryField.split(",").map((c) => c.trim()).filter(Boolean);
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (inQuotes) {
+          if (char === '"' && next === '"') {
+            field += '"';
+            i++;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            field += char;
+          }
+          continue;
+        }
+
+        if (char === '"') {
+          inQuotes = true;
+        } else if (char === ",") {
+          row.push(field);
+          field = "";
+        } else if (char === "\n" || (char === "\r" && next === "\n")) {
+          row.push(field);
+          if (row.some((cell) => cell.length > 0)) {
+            rows.push(row);
+          }
+          row = [];
+          field = "";
+          if (char === "\r") i++;
+        } else if (char !== "\r") {
+          field += char;
+        }
+      }
+
+      if (field.length > 0 || row.length > 0) {
+        row.push(field);
+        rows.push(row);
+      }
+
+      if (rows.length === 0) return [];
+
+      const headers = rows[0];
+      return rows.slice(1).map((cells) => {
+        const entry = {};
+        headers.forEach((header, index) => {
+          entry[header] = cells[index] ?? "";
+        });
+        return entry;
+      });
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatType(type) {
+      if (!type) return "Unknown";
+      return type.charAt(0).toUpperCase() + type.slice(1);
+    }
+
+    function formatCategory(category) {
+      if (!category) return "";
+      return CATEGORY_LABELS[category] || category.charAt(0).toUpperCase() + category.slice(1);
+    }
+
+    function formatWebsiteLabel(url) {
+      try {
+        return new URL(url).hostname.replace(/^www\./, "");
+      } catch {
+        return "Website";
+      }
+    }
+
+    const ICONS = {
+      facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.4V9.85c0-2.37 1.4-3.69 3.56-3.69 1.03 0 2.11.18 2.11.18v2.33h-1.19c-1.17 0-1.54.73-1.54 1.48v1.78h2.62l-.42 2.9h-2.2V22c4.78-.75 8.44-4.91 8.44-9.93z"/></svg>',
+      instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2zm-.2 2C6.17 4 5 5.17 5 6.6v10.8C5 18.83 6.17 20 7.6 20h10.8c1.43 0 2.6-1.17 2.6-2.6V6.6C21 5.17 19.83 4 18.4 4H7.6zm9.65 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6z"/></svg>',
+      website: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm7.93 9h-3.17a15.4 15.4 0 00-1.2-5.02A8.03 8.03 0 0119.93 11zM12 4c.9 0 2.2 1.8 2.9 5H9.1C9.8 5.8 11.1 4 12 4zM4.07 13h3.17c.2 1.8.6 3.5 1.2 5.02A8.03 8.03 0 014.07 13zM8.24 11H4.07A8.03 8.03 0 018.24 5.98 15.4 15.4 0 008.24 11zM12 20c-.9 0-2.2-1.8-2.9-5h5.8c-.7 3.2-2 5-2.9 5zm2.76-9H9.24a13.5 13.5 0 011.06-4.5h3.4A13.5 13.5 0 0114.76 11zm0 2a13.5 13.5 0 01-1.06 4.5h-3.4A13.5 13.5 0 019.24 13h5.52zm1.83 5.02c.6-1.52 1-3.22 1.2-5.02h3.17a8.03 8.03 0 01-4.37 5.02z"/></svg>',
+    };
+
+    function socialLink(url, platform, label) {
+      if (!url) return "";
+      return `
+        <a class="social-link ${platform}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">
+          ${ICONS[platform]}
+        </a>
+      `;
+    }
+
+    function compareVendors(a, b, sort) {
+      if (sort === "name-asc") {
+        return (a.name || a.facebook_url).localeCompare(b.name || b.facebook_url);
+      }
+      if (sort === "name-desc") {
+        return (b.name || b.facebook_url).localeCompare(a.name || a.facebook_url);
+      }
+      const dateA = a.date_added || "";
+      const dateB = b.date_added || "";
+      if (sort === "date-asc") return dateA.localeCompare(dateB);
+      return dateB.localeCompare(dateA);
+    }
+
+    function renderCard(vendor) {
+      const name = vendor.name || "Unnamed vendor";
+      const statusClass = vendor.status === "new" ? " status-new" : "";
+      const categoryBadges = parseCategories(vendor.category)
+        .map((cat) => `<span class="badge badge-category">${escapeHtml(formatCategory(cat))}</span>`)
+        .join("");
+      const statusBadge = vendor.status
+        ? `<span class="badge badge-status-${escapeHtml(vendor.status)}">${escapeHtml(vendor.status)}</span>`
+        : "";
+      const location = vendor.location
+        ? `<div class="meta">${escapeHtml(vendor.location)}</div>`
+        : "";
+      const notes = vendor.notes
+        ? `<p class="notes">${escapeHtml(vendor.notes)}</p>`
+        : "";
+      const dateAdded = vendor.date_added
+        ? `<div class="meta">Added ${escapeHtml(vendor.date_added)}</div>`
+        : "";
+      const websiteLabel = vendor.website_url
+        ? `Website (${formatWebsiteLabel(vendor.website_url)})`
+        : "Website";
+      const links = `
+        <div class="links">
+          ${socialLink(vendor.facebook_url, "facebook", "Facebook")}
+          ${socialLink(vendor.instagram_url, "instagram", "Instagram")}
+          ${socialLink(vendor.website_url, "website", websiteLabel)}
+        </div>
+      `;
+
+      return `
+        <article class="card${statusClass}">
+          <div class="card-header">
+            <h2>${escapeHtml(name)}</h2>
+          </div>
+          <div class="badges">
+            <span class="badge badge-type">${escapeHtml(formatType(vendor.facebook_type))}</span>
+            ${categoryBadges}
+            ${statusBadge}
+          </div>
+          ${links}
+          ${location}
+          ${notes}
+          ${dateAdded}
+        </article>
+      `;
+    }
+
+    let vendors = [];
+
+    function applyFilters() {
+      const search = document.getElementById("search").value.trim().toLowerCase();
+      const category = document.getElementById("filter-category").value;
+      const type = document.getElementById("filter-type").value;
+      const status = document.getElementById("filter-status").value;
+      const sort = document.getElementById("sort").value;
+
+      let filtered = vendors.filter((vendor) => {
+        if (category && !parseCategories(vendor.category).includes(category)) return false;
+        if (type && vendor.facebook_type !== type) return false;
+        if (status && vendor.status !== status) return false;
+        if (search) {
+          const haystack = `${vendor.name} ${vendor.notes} ${vendor.location} ${vendor.website_url} ${vendor.instagram_url}`.toLowerCase();
+          if (!haystack.includes(search)) return false;
+        }
+        return true;
+      });
+
+      filtered.sort((a, b) => compareVendors(a, b, sort));
+
+      const content = document.getElementById("content");
+      const stats = document.getElementById("stats");
+
+      if (filtered.length === 0) {
+        content.className = "";
+        content.innerHTML = '<p class="empty">No vendors match your filters.</p>';
+      } else {
+        content.className = "grid";
+        content.innerHTML = filtered.map(renderCard).join("");
+      }
+
+      stats.textContent = `${filtered.length} of ${vendors.length}`;
+    }
+
+    function populateCategoryFilter() {
+      const select = document.getElementById("filter-category");
+      const used = new Set(vendors.flatMap((v) => parseCategories(v.category)));
+      const options = [...new Set([...CATEGORIES, ...used])].sort();
+      options.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = formatCategory(category);
+        select.appendChild(option);
+      });
+    }
+
+    async function init() {
+      const content = document.getElementById("content");
+
+      try {
+        const response = await fetch(`vendors.csv?t=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+        vendors = parseCSV(text);
+        populateCategoryFilter();
+        applyFilters();
+      } catch (error) {
+        content.className = "";
+        content.innerHTML = `
+          <p class="error">
+            Could not load vendors.csv. Run a local server from the project folder:<br>
+            <code>python -m http.server 8000</code>
+          </p>
+        `;
+        console.error(error);
+      }
+    }
+
+    ["search", "filter-category", "filter-type", "filter-status", "sort"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", applyFilters);
+      document.getElementById(id).addEventListener("change", applyFilters);
+    });
+
+    init();
+  </script>
+</body>
+</html>

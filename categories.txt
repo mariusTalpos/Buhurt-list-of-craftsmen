@@ -1,0 +1,10 @@
+steel
+titanium
+shields
+soft_kit
+boots
+weapons
+leather
+fabric
+repairs
+other
