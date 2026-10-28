@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>Review moderation · Buhurt craftsmen</title>
+  <link rel="stylesheet" href="./assets/reviews/moderation.css">
+  <script type="module" src="./assets/reviews/moderation.js"></script>
+</head>
+<body>
+  <header><div><a href="./index.html">← Craftsmen directory</a><h1>Review moderation</h1><p>Owner access · Reviews stay private until approved.</p></div><button id="logout" hidden>Sign out</button></header>
+  <main>
+    <p id="message" role="status" aria-live="polite">Loading configuration…</p>
+    <section id="login" hidden aria-labelledby="login-heading"><h2 id="login-heading">Owner sign in</h2>
+      <p>Use your moderator email and password.</p>
+      <form id="login-form"><label>Email<input name="email" type="email" autocomplete="username" required></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit">Sign in</button></form>
+    </section>
+    <div id="workspace" hidden>
+      <nav aria-label="Review queues"><button id="pending" aria-pressed="true">Pending</button><button id="published" aria-pressed="false">Published</button><button id="refresh">Refresh</button></nav>
+      <div class="columns"><section aria-labelledby="queue-heading"><h2 id="queue-heading">Pending reviews</h2><ul id="queue"></ul></section>
+      <section id="detail" aria-label="Selected review"><p>Select a review to inspect it.</p></section></div>
+    </div>
+  </main>
+</body>
+</html>

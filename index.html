@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buhurt Vendor Directory</title>
+  <link rel="stylesheet" href="assets/reviews/review-form.css">
+  <link rel="stylesheet" href="assets/reviews/public-reviews.css">
   <style>
     :root {
       --bg: #1a1612;
@@ -325,10 +327,14 @@
   </div>
 
   <main>
+    <div id="review-service-status" role="status" aria-live="polite"></div>
     <div id="content" class="grid"></div>
   </main>
 
-  <footer>Buhurt Vendor Directory — data from vendors.csv</footer>
+  <footer>Buhurt Vendor Directory — data from vendors.csv
+    <p>Contact <strong>_gemini</strong> on Discord to correct or remove a review, or report a concern. Include the review link or submission reference.</p>
+    <button type="button" id="copy-discord">Copy Discord handle</button><span id="discord-copy-status" role="status" aria-live="polite"></span>
+  </footer>
 
   <script>
     const CATEGORIES = ["steel", "titanium", "shields", "soft_kit", "boots", "weapons", "leather", "fabric", "repairs", "other"];
@@ -517,6 +523,11 @@
           ${location}
           ${notes}
           ${dateAdded}
+          <div class="vendor-review-summary" data-review-summary="${escapeHtml(vendor.id)}" aria-live="polite"><p>Loading reviews…</p></div>
+          <div class="review-actions">
+            <a class="read-reviews" href="?reviews=${encodeURIComponent(vendor.id)}" aria-label="Read reviews for ${escapeHtml(name)}">Read reviews</a>
+            <button type="button" class="review-action" data-review-vendor="${escapeHtml(vendor.id)}" data-review-name="${escapeHtml(name)}">Write a review</button>
+          </div>
         </article>
       `;
     }
@@ -559,6 +570,7 @@
       }
 
       stats.textContent = `${filtered.length} of ${vendors.length}`;
+      document.dispatchEvent(new CustomEvent('directory:rendered', { detail: { vendors } }));
     }
 
     function populateCategoryFilter() {
@@ -600,7 +612,10 @@
       document.getElementById(id).addEventListener("change", applyFilters);
     });
 
+    document.addEventListener('directory:request', () => document.dispatchEvent(new CustomEvent('directory:rendered', { detail: { vendors } })));
     init();
   </script>
+  <script type="module" src="assets/reviews/review-form.js"></script>
+  <script type="module" src="assets/reviews/public-reviews.js"></script>
 </body>
 </html>

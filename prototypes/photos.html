@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local photo processing prototype</title>
+<style>
+  body { font: 16px/1.5 system-ui; max-width: 920px; padding: 24px; margin: auto; background: #1a1612; color: #f0e6d8; }
+  input, button { font: inherit; margin: 12px 0; max-width: 100%; }
+  button { padding: 8px 16px; }
+  img { max-width: 100%; max-height: 65vh; display: block; }
+  article { border-top: 1px solid #a89880; padding: 16px 0; }
+  .error { color: #ffb1ad; }
+</style>
+<h1>Photo processing prototype</h1>
+<p>Local Phase 1 test. Photos stay in this browser and are never uploaded.</p>
+<p>JPEG, HEIC/HEIF, PNG, WebP · up to 5 photos · 10 MB each · up to 60 megapixels. Output: upright JPEG, maximum 2560 pixels on its longest side.</p>
+<label for="photos">Choose phone photos</label><br>
+<input id="photos" type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif">
+<br><button id="process" type="button">Process photos locally</button>
+<p id="status" role="status"></p>
+<div id="results"></div>
+<script type="module" src="./photos.js"></script>
+</html>

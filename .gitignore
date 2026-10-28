@@ -16,3 +16,14 @@ caddy
 caddy_windows_amd64.exe
 Caddyfile
 .caddy/
+node_modules/
+.cache/
+.local/
+test-results/
+supabase/.temp/
+supabase/.branches/
+public-config.js
+.env.*
+!.env.example
+tests/fixtures/*.jpg
+tests/fixtures/*.heic

@@ -1,0 +1,90 @@
+import { chromium } from 'playwright';
+import { mkdir, writeFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import jpeg from 'jpeg-js';
+import { prototypeServer } from './serve-prototype.mjs';
+import { createModerationHandler } from '../supabase/functions/review-moderate/handler.js';
+import { moderationStore, publicId, privateId } from '../tests/helpers/moderation-store.mjs';
+const backend = 'https://moderation-test.supabase.co';
+const state = moderationStore();
+const pixels = new Uint8Array(40 * 60 * 4).fill(180); for (let n = 3; n < pixels.length; n += 4) pixels[n] = 255;
+const bytes = jpeg.encode({ width: 40, height: 60, data: pixels }, 90).data;
+state.photos.forEach((_, path) => state.photos.set(path, new Blob([bytes], { type: 'image/jpeg' })));
+state.rows.get(publicId).display_name = '<img src=x onerror=alert(1)> Synthetic';
+const ownerId = 'debb0065-2b93-449e-b6f5-f60b65e1b1ca';
+const user = { id: ownerId, email: 'owner@example.invalid', aud: 'authenticated', role: 'authenticated', app_metadata: {}, user_metadata: {}, created_at: new Date().toISOString() };
+const token = `${Buffer.from(JSON.stringify({ alg: 'HS256' })).toString('base64url')}.${Buffer.from(JSON.stringify({ sub: ownerId, exp: Math.floor(Date.now()/1000)+3600 })).toString('base64url')}.mock`;
+let failSave = true;
+const basePath = '/Buhurt-list-of-craftsmen/';
+const server = prototypeServer({ basePath }); await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+const local = `http://127.0.0.1:${server.address().port}`;
+// CORS origin is the actual random-port test server, with no hosted credentials.
+const browserHandler = createModerationHandler({ authorize: async value => value === token ? state.store : null, publicStore: state.store,
+  vendorIds: new Set(['1']), allowedOrigins: [local] });
+const browser = await chromium.launch({ headless: true });
+const context = await browser.newContext({ viewport: { width: 390, height: 844 } }); const page = await context.newPage();
+const errors = []; page.on('pageerror', error => errors.push(error.message));
+await page.route('**/public-config.js', route => route.fulfill({ contentType: 'text/javascript', body: `export const reviewConfig=${JSON.stringify({ supabaseUrl: backend, supabasePublishableKey: 'sb_publishable_mock' })}` }));
+await page.route(`${backend}/auth/v1/**`, async route => {
+  const url = route.request().url();
+  if (url.includes('/logout')) return route.fulfill({ status: 204 });
+  await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ access_token: token, token_type: 'bearer', refresh_token: 'mock-refresh', expires_in: 3600, user }) });
+});
+await page.route(`${backend}/functions/v1/**`, async route => {
+  const request = route.request(); const action = new URL(request.url()).searchParams.get('action');
+  if (action === 'edit' && failSave) { failSave = false; return route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'Synthetic temporary failure. Retry Save.' }) }); }
+  const response = await browserHandler(new Request(request.url(), { method: request.method(), headers: request.headers(), ...(['GET','HEAD'].includes(request.method()) ? {} : { body: request.postDataBuffer() }) }));
+  await route.fulfill({ status: response.status, headers: Object.fromEntries(response.headers), body: Buffer.from(await response.arrayBuffer()) });
+});
+try {
+  await page.goto(`${local}${basePath}moderation.html`);
+  await page.getByRole('textbox', { name: 'Email', exact: true }).fill('owner@example.invalid');
+  await page.getByLabel('Password', { exact: true }).fill('mock-only-password');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await page.getByRole('heading', { name: 'Pending reviews (2)' }).waitFor();
+  assert.equal(await page.getByLabel('Password', { exact: true }).inputValue(), '');
+  await page.getByRole('button', { name: /<img src=x/ }).click();
+  await page.getByRole('textbox', { name: 'Public display name', exact: true }).waitFor();
+  await page.getByRole('img', { name: 'Review photo 1', exact: true }).waitFor();
+  assert.equal(await page.locator('#queue img').count(), 0);
+  assert.equal(await page.getByRole('textbox', { name: 'Contact details', exact: true }).inputValue(), 'test@example.invalid');
+  await page.getByLabel('Quality', { exact: true }).selectOption('5');
+  assert.equal(await page.getByRole('button', { name: 'Approve', exact: true }).isEnabled(), false);
+  await page.getByLabel('Owner note', { exact: true }).fill('Private agreed correction');
+  await page.getByLabel('Include photo 2 publicly', { exact: true }).uncheck();
+  await page.getByRole('button', { name: 'Save changes', exact: true }).click();
+  await page.getByRole('status').filter({ hasText: 'Synthetic temporary failure' }).waitFor();
+  assert.equal(await page.getByLabel('Owner note', { exact: true }).inputValue(), 'Private agreed correction');
+  await page.getByRole('button', { name: 'Save changes', exact: true }).click();
+  await page.getByRole('status').filter({ hasText: 'Changes saved' }).waitFor();
+  assert.equal(state.rows.get(publicId).quality, 5); assert.equal(state.rows.get(publicId).excluded_photo_paths.length, 1);
+  assert.equal(await page.getByRole('button', { name: 'Approve', exact: true }).isEnabled(), true);
+  // Native keyboard input reaches the same controls, with visible focus.
+  await page.getByRole('textbox', { name: 'Public display name', exact: true }).focus(); await page.keyboard.press('Tab');
+  assert.equal(await page.evaluate(() => document.activeElement.name), 'product_service');
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  await mkdir('test-results/moderation', { recursive: true });
+  await page.screenshot({ path: 'test-results/moderation/mobile-review.png', fullPage: true });
+  await page.getByRole('button', { name: 'Approve', exact: true }).click();
+  await page.getByRole('status').filter({ hasText: 'Review approved' }).waitFor();
+  assert.equal(state.rows.get(publicId).status, 'published');
+  await page.getByRole('button', { name: 'Unpublish', exact: true }).click();
+  await page.getByRole('status').filter({ hasText: 'returned to pending' }).waitFor();
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'Delete permanently', exact: true }).click();
+  await page.getByRole('status').filter({ hasText: 'Review and stored photos deleted' }).waitFor();
+  assert.equal(state.rows.has(publicId), false); assert.equal(state.photos.size, 2);
+  await page.getByRole('button', { name: /Synthetic private photos/ }).click();
+  await page.getByText('The reviewer chose private photos. None will be shown publicly.', { exact: true }).waitFor();
+  assert.equal(await page.getByRole('checkbox').count(), 0);
+  assert.equal(state.rows.has(privateId), true);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.screenshot({ path: 'test-results/moderation/desktop-private-review.png', fullPage: true });
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await page.getByRole('heading', { name: 'Owner sign in', exact: true }).waitFor();
+  assert.equal(await page.locator('#detail').innerText(), ''); assert.equal(await page.locator('#queue').innerText(), '');
+  assert.equal(await page.evaluate(() => Object.keys(localStorage).some(key => key.includes('auth-token'))), false);
+  assert.deepEqual(errors, []);
+  const result = { passed: true, browser: browser.version(), viewport: '390x844 and 1280x900', basePath, checks: ['sign in/out', 'private details', 'XSS escaping', 'edit failure/retry', 'ratings', 'exclusion', 'approve', 'unpublish', 'delete', 'private-photo choice', 'keyboard', 'no overflow', 'memory-only session'] };
+  await writeFile('test-results/moderation/browser.json', JSON.stringify(result, null, 2)); console.log(JSON.stringify(result));
+} finally { await browser.close(); await new Promise(resolve => server.close(resolve)); }
