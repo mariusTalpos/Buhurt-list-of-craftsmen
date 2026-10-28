@@ -1,6 +1,6 @@
 # Community reviews: small first-release specification
 
-Status: Agreed first-release scope. Submission, moderation, and public review functionality are implemented for protected testing; final production bot setup, pilot acceptance, and launch remain pending. See the work plan for current status.
+Status: Implemented and deployed for the owner-authorized pilot. Production bot setup and live submission/moderation/photo acceptance passed on iPhone with Opera GX. All four work phases are complete; see the work plan for verification details and the intentionally retained example-vendor test.
 
 ## Goal and scale
 

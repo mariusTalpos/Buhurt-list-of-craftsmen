@@ -6,7 +6,7 @@ The reviews pilot is live at [the directory](https://mariustalpos.github.io/Buhu
 
 ## Feature specifications
 
-- [Community reviews (draft)](docs/reviews-spec.md) — submission, ratings, moderation, private evidence, and first-release requirements.
+- [Community reviews specification](docs/reviews-spec.md) — submission, ratings, moderation, private evidence, and first-release requirements.
 - [Reviews work plan](docs/reviews-work-plan.md) — Supabase setup and four implementation phases.
 
 ### Phase 1 development tools

@@ -88,8 +88,8 @@ At each stopping point, record completed work, relevant checks, unresolved issue
 | Phase | Status |
 |---|---|
 | 1. Foundation and phone photos | Complete; owner accepted the HTTPS phone preview (device/timing details not recorded) |
-| 2. Review submission | Complete for private development testing; production bot configuration deferred to launch |
-| 3. Owner moderation | Complete for private development use; hosted owner lifecycle and cleanup verified |
+| 2. Review submission | Complete; real production bot/submission flow verified in Phase 4 |
+| 3. Owner moderation | Complete; hosted lifecycle verified and live owner flow accepted in Phase 4 |
 | 4. Public reviews and pilot launch | Complete; pilot deployed and live phone submission/moderation/photo acceptance passed on iPhone/Opera GX |
 
 Current checkpoint (October 27, 2026; hosted checks October 28 UTC): Pilot commit **94b857e** is published at https://mariustalpos.github.io/Buhurt-list-of-craftsmen/ and its Pages build succeeded. Production feature flags and Supabase public mode are enabled with the real Turnstile key/secret configuration. Twenty-six automated tests, all three browser flows, release configuration, and live asset/public-read/private-access/invalid-bot checks passed. The bucket remains private and moderator access remains exact-owner-only. The pilot started with no review rows/photos. Read the [Phase 4 handoff](review-phases/phase-4-public-launch.md#handoff--execution-prompt) for details and remaining acceptance work.
