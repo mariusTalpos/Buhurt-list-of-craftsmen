@@ -2,7 +2,7 @@
 
 A lightweight directory of armor smiths, craftsmen, and other commission services for Buhurt fighters. Vendors are stored in a single CSV file, added via a paste-URL script, and browsed through a static HTML viewer.
 
-The reviews pilot is live at [the directory](https://mariustalpos.github.io/Buhurt-list-of-craftsmen/); owner login is at [moderation](https://mariustalpos.github.io/Buhurt-list-of-craftsmen/moderation.html). See the Phase 4 handoff for phone-acceptance status. Run `npm run check:live` for non-destructive production smoke checks.
+The reviews pilot is live at [the directory](https://mariustalpos.github.io/Buhurt-list-of-craftsmen/); owner login is at [moderation](https://mariustalpos.github.io/Buhurt-list-of-craftsmen/moderation.html). Live phone acceptance passed on iPhone with Opera GX; all four work phases are complete. The labeled test review on the example craftsman is intentionally retained by the owner. Run `npm run check:live` for non-destructive production smoke checks.
 
 ## Feature specifications
 

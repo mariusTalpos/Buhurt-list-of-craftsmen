@@ -1,6 +1,6 @@
 # Phase 4: Public reviews and pilot launch
 
-Status: **Pilot deployed; live smoke checks passed; real phone submission/acceptance pending.** The owner explicitly authorized enabling production mode and pushing to GitHub Pages. Deployed October 27, 2026 (October 28 UTC), release commit `94b857e`. Depends on [Phase 3](phase-3-moderation.md).
+Status: **Complete — pilot deployed and live phone acceptance passed.** The owner explicitly authorized the release and confirmed submission, moderator sign-in, approval, and a good published photo on an **iPhone using Opera GX**. The labeled review on the example craftsman is intentionally retained at the owner's direction. Deployed October 27, 2026 (October 28 UTC), release commit `94b857e`. Depends on [Phase 3](phase-3-moderation.md).
 
 ## Objective
 
@@ -12,7 +12,7 @@ Read [the specification](../reviews-spec.md), [the work-plan index](../reviews-w
 
 - Submission and owner moderation pass their completion checks.
 - Confirm the real GitHub Pages URL, including any repository subpath, and its deployment mechanism before changing or pushing deployment configuration.
-- Owner access is ready and tested. Production origin and bot credentials are configured, and the authorized pilot is deployed. A real successful challenge/submission and physical-phone acceptance remain outstanding.
+- Owner access, production origin/bot credentials, and the deployed pilot are verified. Live submission and moderation passed on the owner's iPhone using Opera GX.
 
 ## Tasks
 
@@ -22,10 +22,10 @@ Read [the specification](../reviews-spec.md), [the work-plan index](../reviews-w
 - [x] Add overall/category averages, one published-review count, and Read/Write actions to craftsman cards. Compute from published reviews; no statistics table or background jobs.
 - [x] Add “No reviews yet,” loading, and “Reviews temporarily unavailable” states. Keep the directory working during backend outages. A failed submission must show failure and preserve the current form, not claim it will be delivered later.
 - [x] Show the copyable Discord handle `_gemini` in the footer and contact instructions. Reports and correction requests go directly to the owner.
-- [ ] Verify relative asset links, page routes, API origin configuration, and login behavior at the actual GitHub Pages path.
-- [ ] Run the complete lifecycle checks below and have the owner try a phone submission and moderation action.
+- [x] Verify relative asset links, page routes, API origin configuration, and login behavior at the actual GitHub Pages path.
+- [x] Run the complete lifecycle checks below and have the owner try a phone submission and moderation action.
 - [x] Remove identified synthetic test data, document deployed configuration locations and basic owner usage, and prepare the release. Publish only when launch is authorized; preparing this plan is not deployment authorization.
-- [ ] After an authorized release, smoke-test the live directory, submission, private queue, and public review visibility. Record the actual result and any remaining limitations.
+- [x] After an authorized release, smoke-test the live directory, submission, private queue, and public review visibility. Owner confirmed the complete live phone flow; API checks confirm the published review/photo. The labeled example-vendor test remains intentionally retained.
 
 ## Completion checks
 
@@ -33,7 +33,7 @@ Read [the specification](../reviews-spec.md), [the work-plan index](../reviews-w
 - [x] Two reviews with ratings [5,4,3,4] and [3,2,5,2] produce overall 3.5 and category averages 4.0, 3.0, 4.0, 3.0. Removing either recalculates correctly; zero reviews never display zero stars.
 - [x] Direct public requests cannot retrieve pending reviews, contacts, notes, or owner-only photos. Previously published images stop being served after withdrawal. Covered by prior lifecycle/privacy checks; live raw-table and private-moderation API access are also denied to anonymous callers.
 - [x] An unavailable backend produces an honest error, leaves vendor browsing usable, and does not erase a submission form still open in the browser.
-- [ ] Supported phone photos, private/public photo choices, keyboard navigation, mobile layout, and production bot checks work.
+- [x] Supported phone photos, private/public photo choices, keyboard navigation, mobile layout, and production bot checks work. Automated coverage plus live acceptance on iPhone/Opera GX; no broader physical-device/browser claim is made.
 - [x] Live deployment is verified. Pages build for release commit `94b857e` succeeded; live configuration, static assets, public reads, and private API denial passed. See the remaining human/phone acceptance checks below.
 
 ## Optional follow-up: Supabase pause-warning monitor
@@ -97,17 +97,17 @@ Scores are computed on request, with paged reads to avoid the database API's def
 - Deleted fixture IDs: `2942e4c8-1df9-4f8b-9abb-9ffcbb141731` and `0878f76a-7891-4aa5-94a9-6536ec792b8f`. Their temporary permit file was removed. Final expected/verified state: zero reviews, zero published records, zero review-photo files. Automated browser fixtures are isolated and do not populate the local hosted preview.
 - Useful commands: `npm test`, `npm run test:public:browser`, `npm run test:reviews:browser`, `npm run test:moderation:browser`, `npm run check:release`. The staged hosted script `npm run test:public:hosted -- prepare` creates real synthetic records and stores cleanup permits in ignored `.local/`; its check-pending/check-published/check-edited/check-withdrawn/check-empty stages expect the corresponding controlled fixture state. Do not run prepare casually or discard its permits before cleanup.
 
-### Remaining final steps — Turnstile saved for last
+### Pilot release and acceptance record
 
-1. The owner reports creating the Cloudflare widget/keys and supplied the public site key, now saved in public-config.production.js. Confirm the widget uses **Managed** mode and hostname **mariustalpos.github.io** (no scheme or repository path); these dashboard settings have not been independently inspected. The owner keeps the secret out of chat. [Widget setup](https://developers.cloudflare.com/turnstile/get-started/widget-management/dashboard/)
-2. **Secret and origins saved:** the owner entered `TURNSTILE_SECRET_KEY` directly into Supabase; its presence was verified in the dashboard's custom-secret list without revealing its value. `REVIEW_ALLOWED_ORIGINS` is configured for `https://mariustalpos.github.io,http://localhost:8000,http://127.0.0.1:8000`. Hosted CORS checks returned 204 with the matching allowed-origin header for all three and 403 for an unrelated origin. The release can restrict this to `https://mariustalpos.github.io`. Backend public-mode challenge verification checks hostname and action `review-submit`; development keys are refused in public mode. Public mode was enabled after the owner's release approval. The key pair still needs a successful real challenge check. [Supabase secrets](https://supabase.com/docs/guides/functions/secrets)
-3. **Pilot enabled:** the real site key and both enabled frontend flags are published; Supabase public mode is true. The production verifier rejected a dummy token with HTTP 400, rather than accepting development credentials. A real successful challenge still needs the phone test; rejection alone does not prove the key pair matches.
-4. Launch configuration, the real hosted path/assets/CORS, anonymous access denial, and login-page rendering are verified. Have the owner submit from a physical phone, moderate the test review, and inspect its published image. Successful real production bot verification, physical-phone Phase 4 acceptance, and a fresh authenticated live moderation action are still **not verified**. Existing automated tests and invalid-token rejection do not substitute for these.
-5. The authorized pilot is published. Finish the real phone submit → approve → public photo check, then remove only that identified pilot test review/photos through moderation. Do not mark Phase 4 fully complete until the required human/phone checks pass. No community invitations or external messages were sent.
+1. The owner created the Cloudflare widget/keys following the Managed-mode setup instructions and supplied the public site key, now saved in public-config.production.js. The successful live submission verifies that the production hostname **mariustalpos.github.io** is accepted. Other dashboard settings were not independently inspected. The owner kept the secret out of chat. [Widget setup](https://developers.cloudflare.com/turnstile/get-started/widget-management/dashboard/)
+2. **Secret and origins saved:** the owner entered `TURNSTILE_SECRET_KEY` directly into Supabase; its presence was verified in the dashboard's custom-secret list without revealing its value. `REVIEW_ALLOWED_ORIGINS` is configured for `https://mariustalpos.github.io,http://localhost:8000,http://127.0.0.1:8000`. Hosted CORS checks returned 204 with the matching allowed-origin header for all three and 403 for an unrelated origin. Backend public-mode challenge verification checks hostname and action `review-submit`; development keys are refused in public mode. Public mode was enabled after the owner's release approval, and the successful real phone submission exercised the active key pair. [Supabase secrets](https://supabase.com/docs/guides/functions/secrets)
+3. **Pilot enabled:** the real site key and both frontend flags are published; Supabase public mode is true. The production verifier rejects dummy tokens with HTTP 400. The owner's successful live phone submission also exercises the real secret, hostname, and action verification path.
+4. **Live acceptance passed:** on an **iPhone with Opera GX**, the owner submitted a review, signed into the live moderation panel, approved it, and reported the photo looked perfectly fine. The published record and permitted image are also retrievable through the public API with no private contact/note/storage-path fields. Exact iPhone model, OS version, source image codec, and timings were not recorded.
+5. The owner chose to retain the labeled test because Steel Armoury is the directory's example/fake craftsman. This overrides removal of that final acceptance fixture; it is not a review of a real purchase. No community invitations or external messages were sent.
 
-No implementation/deployment blocker remains. Keep the remaining human acceptance checks pending until observed/reported, and the optional email monitor inactive unless separately requested.
+No required implementation, deployment, or acceptance work remains. The example-vendor fixture is retained by owner choice. Keep the optional email monitor inactive unless separately requested.
 
-Key setup progress: review-submit **v5** uses the test secret only in capability-protected preview mode and the real `TURNSTILE_SECRET_KEY` in public mode. The real secret is present, production origins are configured, and the public pilot is deployed. The owner previously reported manual submission/moderation/approval in preview; the new live phone/human check remains pending.
+Key setup progress: review-submit **v5** uses the test secret only in capability-protected preview mode and the real `TURNSTILE_SECRET_KEY` in public mode. Real production configuration and the successful live phone flow are now verified.
 
 > Execute Phase 4 in docs/review-phases/phase-4-public-launch.md after checking prior handoffs. Implement public reviews and score display, verify the full flow and privacy boundaries, and prepare the pilot release. Deploy only with launch authorization. Update status and verification results. Leave the optional email monitor inactive unless separately requested.
 
@@ -115,4 +115,4 @@ Key setup progress: review-submit **v5** uses the test secret only in capability
 
 The authorized pilot is deployed. All 26 automated tests, submission/public/moderation browser flows, launch configuration, and live smoke checks passed. Staged files were checked for the actual local preview credential, server-key patterns, and private runtime directories; none were published. The release started with zero review rows and zero photo objects. Live UI shows Read/Write actions and No reviews yet; screenshot: ignored `test-results/pilot/live-directory.png`.
 
-Remaining acceptance: the owner has been asked to use a physical phone to submit a labeled Pilot phone test against Steel Armoury (the example entry), complete the real challenge if prompted, sign into the live moderator page, approve it, and report browser/device plus photo clarity/orientation. No successful real challenge or phone acceptance is claimed before that reply. The optional email monitor is inactive.
+Acceptance complete: owner-reported iPhone/Opera GX submission → live owner login → approval → good published photo. Retained fixture: review **1f0cdccf-5ec4-45c5-a2e0-808e86df855c**, display name **Pilot phone test**, vendor ID **1** (Steel Armoury example entry), one permitted photo. The owner explicitly accepted keeping it because the craftsman is fake; no deletion was performed. Other synthetic development fixtures were already removed. Phase 4 is complete; the optional email monitor is inactive.

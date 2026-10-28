@@ -1,6 +1,6 @@
 # Reviews: Supabase setup and phased work plan
 
-Stack decision: GitHub Pages + vendors.csv, Supabase Postgres, Storage, Edge Functions, and owner-only Auth. Scope: [review specification](reviews-spec.md). Phases 1–3 are complete. The owner-authorized Phase 4 pilot is deployed; real phone submission/acceptance remains pending.
+Stack decision: GitHub Pages + vendors.csv, Supabase Postgres, Storage, Edge Functions, and owner-only Auth. Scope: [review specification](reviews-spec.md). All four phases are complete. The owner-authorized pilot is deployed and accepted on iPhone with Opera GX.
 
 ## Separate execution plans
 
@@ -90,8 +90,8 @@ At each stopping point, record completed work, relevant checks, unresolved issue
 | 1. Foundation and phone photos | Complete; owner accepted the HTTPS phone preview (device/timing details not recorded) |
 | 2. Review submission | Complete for private development testing; production bot configuration deferred to launch |
 | 3. Owner moderation | Complete for private development use; hosted owner lifecycle and cleanup verified |
-| 4. Public reviews and pilot launch | Pilot deployed; automated and live smoke checks passed; successful real challenge/phone acceptance pending |
+| 4. Public reviews and pilot launch | Complete; pilot deployed and live phone submission/moderation/photo acceptance passed on iPhone/Opera GX |
 
 Current checkpoint (October 27, 2026; hosted checks October 28 UTC): Pilot commit **94b857e** is published at https://mariustalpos.github.io/Buhurt-list-of-craftsmen/ and its Pages build succeeded. Production feature flags and Supabase public mode are enabled with the real Turnstile key/secret configuration. Twenty-six automated tests, all three browser flows, release configuration, and live asset/public-read/private-access/invalid-bot checks passed. The bucket remains private and moderator access remains exact-owner-only. The pilot started with no review rows/photos. Read the [Phase 4 handoff](review-phases/phase-4-public-launch.md#handoff--execution-prompt) for details and remaining acceptance work.
 
-Next step: the owner performs the requested real phone submission/approval/photo check at the HTTPS pilot, then deletes that identified test review/photos through moderation. The live moderator page is https://mariustalpos.github.io/Buhurt-list-of-craftsmen/moderation.html. Existing local test-key submissions no longer apply to the production-mode backend; use the live site for real bot validation. No successful real challenge or physical-phone acceptance is claimed yet. No email monitor, community invitation, or tunnel was activated. Keep Phase 4 acceptance pending until the owner reports the result.
+Live acceptance is complete: the owner successfully submitted, signed into moderation, approved the review, and reported the photo looked fine on an **iPhone using Opera GX**. The labeled **Pilot phone test** review (`1f0cdccf-5ec4-45c5-a2e0-808e86df855c`) and its one photo are intentionally retained at the owner's direction because vendor ID 1 is an example/fake craftsman. No required phase work remains. The live moderator page is https://mariustalpos.github.io/Buhurt-list-of-craftsmen/moderation.html. Existing local test-key submissions do not apply to the production-mode backend; use the live site. No email monitor, community invitation, or tunnel was activated.
