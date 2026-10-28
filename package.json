@@ -15,6 +15,7 @@
     "test:public:hosted": "node scripts/test-public-reviews-hosted.mjs",
     "check:release": "node scripts/check-review-release.mjs",
     "check:launch": "node scripts/check-review-release.mjs --launch",
+    "check:live": "node scripts/check-live-reviews.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:photos": "node scripts/test-photos.mjs",
     "fixtures:photos": "node scripts/fetch-photo-fixtures.mjs",

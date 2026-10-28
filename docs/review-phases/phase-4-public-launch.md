@@ -1,6 +1,6 @@
 # Phase 4: Public reviews and pilot launch
 
-Status: **Pilot release authorized and in progress; live verification and phone acceptance pending.** The owner explicitly authorized enabling production mode and pushing to GitHub Pages. Implemented and tested October 27, 2026 (October 28 UTC). Depends on [Phase 3](phase-3-moderation.md).
+Status: **Pilot deployed; live smoke checks passed; real phone submission/acceptance pending.** The owner explicitly authorized enabling production mode and pushing to GitHub Pages. Deployed October 27, 2026 (October 28 UTC), release commit `94b857e`. Depends on [Phase 3](phase-3-moderation.md).
 
 ## Objective
 
@@ -12,7 +12,7 @@ Read [the specification](../reviews-spec.md), [the work-plan index](../reviews-w
 
 - Submission and owner moderation pass their completion checks.
 - Confirm the real GitHub Pages URL, including any repository subpath, and its deployment mechanism before changing or pushing deployment configuration.
-- Owner access is ready and tested. Production origin/bot credentials are release prerequisites, not blockers for developing/testing the protected preview. Real Turnstile keys, physical-phone acceptance, and authorized deployment remain outstanding.
+- Owner access is ready and tested. Production origin and bot credentials are configured, and the authorized pilot is deployed. A real successful challenge/submission and physical-phone acceptance remain outstanding.
 
 ## Tasks
 
@@ -31,10 +31,10 @@ Read [the specification](../reviews-spec.md), [the work-plan index](../reviews-w
 
 - [x] Submit → approve → edit → unpublish/delete changes the public content and scores correctly.
 - [x] Two reviews with ratings [5,4,3,4] and [3,2,5,2] produce overall 3.5 and category averages 4.0, 3.0, 4.0, 3.0. Removing either recalculates correctly; zero reviews never display zero stars.
-- [x] Direct public requests cannot retrieve pending reviews, contacts, notes, or owner-only photos. Previously published images stop being served after withdrawal. Verified through the gated read endpoint; general public access is still closed.
+- [x] Direct public requests cannot retrieve pending reviews, contacts, notes, or owner-only photos. Previously published images stop being served after withdrawal. Covered by prior lifecycle/privacy checks; live raw-table and private-moderation API access are also denied to anonymous callers.
 - [x] An unavailable backend produces an honest error, leaves vendor browsing usable, and does not erase a submission form still open in the browser.
 - [ ] Supported phone photos, private/public photo choices, keyboard navigation, mobile layout, and production bot checks work.
-- [ ] Live deployment is verified, or explicitly marked “ready for launch; not deployed” if authorization/setup is still pending.
+- [x] Live deployment is verified. Pages build for release commit `94b857e` succeeded; live configuration, static assets, public reads, and private API denial passed. See the remaining human/phone acceptance checks below.
 
 ## Optional follow-up: Supabase pause-warning monitor
 
@@ -63,7 +63,7 @@ Supabase documents warning emails and dashboard/API activity as ways to prevent 
 
 ### Hosted read endpoint
 
-**review-public version 1** is deployed in project `viiltjxyojhlswtieexc`, with `verify_jwt=false`. Visitors need no Auth account. While `REVIEW_PUBLIC_ENABLED` is false, all read actions require the existing private preview capability in `x-review-preview`. No public-mode flag or production origin has been enabled. Current related functions: review-submit **v5** (see key setup progress below) and review-moderate **v3**.
+**review-public version 1** is deployed in project `viiltjxyojhlswtieexc`, with `verify_jwt=false`. Visitors need no Auth account. **REVIEW_PUBLIC_ENABLED=true** is now set for the authorized pilot: public reads no longer require the preview capability, and submissions require the real Turnstile secret. Current related functions: review-submit **v5** and review-moderate **v3**. The private bucket, exact-owner moderation, and raw-table restrictions remain in place.
 
 Base URL: `https://viiltjxyojhlswtieexc.supabase.co/functions/v1/review-public`. All data actions use GET; OPTIONS supports CORS. Writes return 405. Browser requests send the publishable apikey; preview calls also send their ignored local capability header.
 
@@ -81,10 +81,10 @@ Scores are computed on request, with paged reads to avoid the database API's def
 ### Configuration and build
 
 - Run `npm run build:reviews` after source or CSV changes. It builds submission, moderation, and public-view bundles and regenerates accepted CSV IDs. Run `npm run preview:reviews` to prepare the ignored local configuration and deployment bundles, including `.local/public-review-deployment-files.json`.
-- The shared browser loader in `src/reviews/config.js` first tries ignored `public-config.js`, then falls back to **public-config.production.js**. The checked-in production file contains only the project URL, publishable key, feature flags, and public Turnstile site key. Both flags remain **false**; the owner-supplied real site key has now been saved. This fixes the deployment gap where GitHub Pages would otherwise have no configuration because the development file is ignored. Never publish/force-add the development file or `.local/`.
-- Local preview configuration sets reviewsEnabled/submissionEnabled true and uses the existing private preview capability and development bot keys. This does not open hosted endpoints to general visitors. A production browser must never contain previewToken, a service-role key, or the Turnstile secret.
-- `npm run check:release` validates public configuration and expected built assets. `npm run check:release -- --launch` additionally requires enabled flags and a real public Turnstile site key; it deliberately fails before those final steps. It does not claim to verify hosted credentials or authorize deployment.
-- The verified Pages source is branch **master**, repository root `/`, with GitHub's active pages-build-deployment workflow. Public URL: **https://mariustalpos.github.io/Buhurt-list-of-craftsmen/**. A push to master publishes static files; Supabase functions deploy separately. No push, branch/Pages setting change, or static release was performed.
+- The shared browser loader in `src/reviews/config.js` first tries ignored `public-config.js`, then falls back to **public-config.production.js**. The published production file contains only the project URL, publishable key, feature flags, and real public Turnstile site key. Both feature flags are now **true**. Development public-config.js and `.local/` remain untracked and unavailable from Pages; live requests for them returned 404.
+- Local preview configuration still uses development bot keys. Once the shared hosted backend is in public mode, use the real Pages site for submissions; the backend deliberately rejects test tokens. Local moderation/public browsing can still use the allowed local origins. A production browser must never contain previewToken, a service-role key, or the Turnstile secret.
+- `npm run check:release` validates public configuration and expected built assets. **npm run check:launch** additionally checks enabled flags and a real public Turnstile site key (explicit script avoids argument forwarding differences on Windows). It passed before publishing. **npm run check:live** checks deployed assets/configuration, public reads, absence of private files, anonymous access denial, and rejection of a deliberately invalid bot token. Neither check substitutes for a successful human challenge/submission.
+- The verified Pages source is branch **master**, repository root `/`, with GitHub's active pages-build-deployment workflow. Public URL: **https://mariustalpos.github.io/Buhurt-list-of-craftsmen/**. Release commit **94b857ebe06d0d7562bcef74a46e7327e8c07882** was pushed after owner approval. [Pages build 40619459555](https://github.com/mariusTalpos/Buhurt-list-of-craftsmen/actions/runs/40619459555) succeeded. Supabase functions deploy separately; the pilot enabled their production environment flag through the dashboard without reading secret values.
 
 ### Verification performed
 
@@ -100,17 +100,19 @@ Scores are computed on request, with paged reads to avoid the database API's def
 ### Remaining final steps — Turnstile saved for last
 
 1. The owner reports creating the Cloudflare widget/keys and supplied the public site key, now saved in public-config.production.js. Confirm the widget uses **Managed** mode and hostname **mariustalpos.github.io** (no scheme or repository path); these dashboard settings have not been independently inspected. The owner keeps the secret out of chat. [Widget setup](https://developers.cloudflare.com/turnstile/get-started/widget-management/dashboard/)
-2. **Secret and origins saved:** the owner entered `TURNSTILE_SECRET_KEY` directly into Supabase; its presence was verified in the dashboard's custom-secret list without revealing its value. `REVIEW_ALLOWED_ORIGINS` is configured for `https://mariustalpos.github.io,http://localhost:8000,http://127.0.0.1:8000`. Hosted CORS checks returned 204 with the matching allowed-origin header for all three and 403 for an unrelated origin. The release can restrict this to `https://mariustalpos.github.io`. Backend public-mode challenge verification checks hostname and action `review-submit`; development keys are refused in public mode. The key pair still needs a real challenge check; keep public mode disabled until release approval. [Supabase secrets](https://supabase.com/docs/guides/functions/secrets)
-3. The real public site key is saved; both frontend flags remain disabled. Coordinate enabling reviewsEnabled/submissionEnabled with `REVIEW_PUBLIC_ENABLED=true` at the authorized release. Deploy current backend bundles if needed; do not replace preview hashes with empty values while still relying on preview mode. Do not expose submissions before real bot verification is configured.
-4. Run the launch configuration check and real bot/hostname checks. Have the owner submit from a physical phone and moderate that test review. Real production bot verification, physical-phone Phase 4 acceptance, actual hosted-site path/CORS/login smoke checks, and public launch are still **not verified**. No test result above substitutes for these.
-5. With launch authorization, commit/push the prepared static files to master (which automatically publishes Pages), then verify the full live flow and remove that final identified test data. Until then describe the state as **development complete; awaiting final configuration and release**, not fully launched or fully Phase 4 complete.
+2. **Secret and origins saved:** the owner entered `TURNSTILE_SECRET_KEY` directly into Supabase; its presence was verified in the dashboard's custom-secret list without revealing its value. `REVIEW_ALLOWED_ORIGINS` is configured for `https://mariustalpos.github.io,http://localhost:8000,http://127.0.0.1:8000`. Hosted CORS checks returned 204 with the matching allowed-origin header for all three and 403 for an unrelated origin. The release can restrict this to `https://mariustalpos.github.io`. Backend public-mode challenge verification checks hostname and action `review-submit`; development keys are refused in public mode. Public mode was enabled after the owner's release approval. The key pair still needs a successful real challenge check. [Supabase secrets](https://supabase.com/docs/guides/functions/secrets)
+3. **Pilot enabled:** the real site key and both enabled frontend flags are published; Supabase public mode is true. The production verifier rejected a dummy token with HTTP 400, rather than accepting development credentials. A real successful challenge still needs the phone test; rejection alone does not prove the key pair matches.
+4. Launch configuration, the real hosted path/assets/CORS, anonymous access denial, and login-page rendering are verified. Have the owner submit from a physical phone, moderate the test review, and inspect its published image. Successful real production bot verification, physical-phone Phase 4 acceptance, and a fresh authenticated live moderation action are still **not verified**. Existing automated tests and invalid-token rejection do not substitute for these.
+5. The authorized pilot is published. Finish the real phone submit → approve → public photo check, then remove only that identified pilot test review/photos through moderation. Do not mark Phase 4 fully complete until the required human/phone checks pass. No community invitations or external messages were sent.
 
-No implementation blocker remains for the authorized development scope. The final configuration/acceptance gates are deliberate deferrals, not completed checks. Keep the optional email monitor inactive unless separately requested.
+No implementation/deployment blocker remains. Keep the remaining human acceptance checks pending until observed/reported, and the optional email monitor inactive unless separately requested.
 
-Key setup progress: review-submit **v5** explicitly uses the documented test secret in capability-protected preview mode and reads `TURNSTILE_SECRET_KEY` only in public mode. Saving the real secret therefore does not pair it with the local test widget. Twenty-six automated tests and release validation passed; hosted start/cancel succeeded without creating a row or photo. The owner also reported manually submitting/moderating/approving end to end. The real secret is now confirmed present in Supabase, but not yet verified with a real challenge; final origin settings, phone acceptance, and launch remain pending.
+Key setup progress: review-submit **v5** uses the test secret only in capability-protected preview mode and the real `TURNSTILE_SECRET_KEY` in public mode. The real secret is present, production origins are configured, and the public pilot is deployed. The owner previously reported manual submission/moderation/approval in preview; the new live phone/human check remains pending.
 
 > Execute Phase 4 in docs/review-phases/phase-4-public-launch.md after checking prior handoffs. Implement public reviews and score display, verify the full flow and privacy boundaries, and prepare the pilot release. Deploy only with launch authorization. Update status and verification results. Leave the optional email monitor inactive unless separately requested.
 
 ## Progress / next step
 
-The owner authorized the pilot release. Production frontend flags are enabled and Supabase public mode is being enabled. All 26 automated tests and the submission/public/moderation browser flows passed again before publishing; `npm run check:launch` checks the actual launch flag explicitly. The prelaunch database/bucket check found no review rows or photo objects. Publication, real production Turnstile verification, and phone acceptance will be recorded below after they occur. Optional monitor remains inactive.
+The authorized pilot is deployed. All 26 automated tests, submission/public/moderation browser flows, launch configuration, and live smoke checks passed. Staged files were checked for the actual local preview credential, server-key patterns, and private runtime directories; none were published. The release started with zero review rows and zero photo objects. Live UI shows Read/Write actions and No reviews yet; screenshot: ignored `test-results/pilot/live-directory.png`.
+
+Remaining acceptance: the owner has been asked to use a physical phone to submit a labeled Pilot phone test against Steel Armoury (the example entry), complete the real challenge if prompted, sign into the live moderator page, approve it, and report browser/device plus photo clarity/orientation. No successful real challenge or phone acceptance is claimed before that reply. The optional email monitor is inactive.

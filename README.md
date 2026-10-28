@@ -2,6 +2,8 @@
 
 A lightweight directory of armor smiths, craftsmen, and other commission services for Buhurt fighters. Vendors are stored in a single CSV file, added via a paste-URL script, and browsed through a static HTML viewer.
 
+The reviews pilot is live at [the directory](https://mariustalpos.github.io/Buhurt-list-of-craftsmen/); owner login is at [moderation](https://mariustalpos.github.io/Buhurt-list-of-craftsmen/moderation.html). See the Phase 4 handoff for phone-acceptance status. Run `npm run check:live` for non-destructive production smoke checks.
+
 ## Feature specifications
 
 - [Community reviews (draft)](docs/reviews-spec.md) — submission, ratings, moderation, private evidence, and first-release requirements.
@@ -19,7 +21,7 @@ npm run test:photos
 npm run dev:photos
 ```
 
-The optional fixture command downloads public upstream test photos with pinned hashes. The local prototype is at `http://localhost:8000/prototypes/photos.html`; processing stays in the browser. The development server allows LAN access for phone testing and serves only the directory, prototype, photo assets, and test fixtures. The existing static directory still works independently, including with the Python server below. No public review feature is launched.
+The optional fixture command downloads public upstream test photos with pinned hashes. The local prototype is at `http://localhost:8000/prototypes/photos.html`; processing stays in the browser. The development server allows LAN access for photo testing and serves an allowlisted set of site/prototype/assets files. The existing static directory still works independently, including with the Python server below. The original Phase 1 milestone did not launch reviews; the pilot status is recorded above.
 
 Hosted setup, database checks, remaining verification, and the Phase 2 interface are recorded in the [Phase 1 handoff](docs/review-phases/phase-1-foundation.md#handoff-to-phase-2).
 
@@ -27,7 +29,7 @@ Hosted setup, database checks, remaining verification, and the Phase 2 interface
 
 Run `npm run build:reviews` after changing the form or vendor CSV. This rebuilds the form assets and the backend's accepted vendor IDs. `npm test` checks validation and recovery behavior; `npm run test:reviews:browser` checks the mobile form and lost-response retry with an isolated test backend.
 
-The [Phase 2 handoff](docs/review-phases/phase-2-submission.md#handoff-to-phase-3) documents the hosted private preview, upload protocol, test fixtures, and remaining production setup. Local `public-config.js` and `.local/` preview credentials are ignored by Git. Without enabled configuration, review buttons remain hidden and the directory still works. Public submissions and moderation are not launched.
+The [Phase 2 handoff](docs/review-phases/phase-2-submission.md#handoff-to-phase-3) documents the original hosted private preview, upload protocol, and fixtures. Local `public-config.js` and `.local/` preview credentials are ignored by Git. Without enabled configuration, review buttons remain hidden and the directory still works. For the deployed pilot, use the live site and real Turnstile check.
 
 ### Phase 3 owner moderation
 
